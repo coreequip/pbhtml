@@ -26,3 +26,13 @@ jobs:
         with:
           name: pbhtml-macos-arm64
           path: pbhtml-arm64.tar
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release delete latest --yes || true
+          git tag -d latest || true
+          git tag latest
+          git push origin latest --force
+          gh release create latest pbhtml-arm64.tar --title "Latest Build" --notes "Automatic build from master branch"
