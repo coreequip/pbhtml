@@ -1,0 +1,28 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build for ARM64
+        run: |
+          swiftc -target arm64-apple-macosx11.0 pbhtml.swift -o pbhtml-arm64
+
+      - name: Package Release
+        run: |
+          tar -cvf pbhtml-arm64.tar pbhtml-arm64 README.md
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pbhtml-macos-arm64
+          path: pbhtml-arm64.tar
